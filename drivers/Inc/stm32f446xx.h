@@ -8,6 +8,9 @@
 #ifndef INC_STM32F446XX_H_
 #define INC_STM32F446XX_H_
 
+#include <stdint.h>
+
+#define __vo volatile
 /*
  * base addresses of Flash and SRAM memories
  */
@@ -62,5 +65,26 @@
 #define SYSCFG_BASEADDR				(APB2PERIPH_BASEADDR + 0x3800)
 #define USART1_BASEADDR				(APB2PERIPH_BASEADDR + 0x1000)
 #define USART6_BASEADDR				(APB2PERIPH_BASEADDR + 0x1400)
+
+/****************************** peripheral register definition structures *****************************/
+
+/*
+ * Note : Registers of a peripheral are specific to MCU
+ * please check your Device of Reference Manual
+ */
+
+typedef struct
+{
+	__vo uint32_t MODER;						/* GPIO port mode register 						offset : 0x00 */
+	__vo uint32_t OTYPER;					/* GPIO port output type register 				offset : 0x04 */
+	__vo uint32_t OSPEEDER;					/* GPIO port output speed register 				offset : 0x08 */
+	__vo uint32_t PUPDR;						/* GPIO port pull-up/pull-down register 		offset : 0x0c */
+	__vo uint32_t IDR;						/* GPIO port input data register 				offset : 0x10 */
+	__vo uint32_t ODR;						/* GPIO port output data register 				offset : 0x14 */
+	__vo uint32_t BSRR;						/* GPIO port bit set/reset register 			offset : 0x18 */
+	__vo uint32_t LCKR;						/* GPIO port configuration lock register		offset : 0x1c */
+	__vo uint32_t AFR[2]; 					/* GPIO alternate function low/high register	offset : 0x20 */
+}GPIO_RegDef_t;
+
 
 #endif /* INC_STM32F446XX_H_ */
