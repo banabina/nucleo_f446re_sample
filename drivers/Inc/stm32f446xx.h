@@ -78,7 +78,7 @@ typedef struct
 {
 	__vo uint32_t MODER;						/* GPIO port mode register 						offset : 0x00 */
 	__vo uint32_t OTYPER;						/* GPIO port output type register 				offset : 0x04 */
-	__vo uint32_t OSPEEDER;						/* GPIO port output speed register 				offset : 0x08 */
+	__vo uint32_t OSPEEDR;						/* GPIO port output speed register 				offset : 0x08 */
 	__vo uint32_t PUPDR;						/* GPIO port pull-up/pull-down register 		offset : 0x0c */
 	__vo uint32_t IDR;							/* GPIO port input data register 				offset : 0x10 */
 	__vo uint32_t ODR;							/* GPIO port output data register 				offset : 0x14 */
@@ -129,15 +129,15 @@ typedef struct
  * peripheral definitions ( Peripheral base addresses typecasted to xxx_RegDef_t )
  */
 
-#define GPIOA 						((GPIO_RegDef_t*)GPIO_A_BASEADDR)
-#define GPIOB 						((GPIO_RegDef_t*)GPIO_B_BASEADDR)
-#define GPIOC 						((GPIO_RegDef_t*)GPIO_C_BASEADDR)
-#define GPIOD 						((GPIO_RegDef_t*)GPIO_D_BASEADDR)
-#define GPIOE 						((GPIO_RegDef_t*)GPIO_E_BASEADDR)
-#define GPIOF 						((GPIO_RegDef_t*)GPIO_F_BASEADDR)
-#define GPIOG 						((GPIO_RegDef_t*)GPIO_G_BASEADDR)
-#define GPIOH 						((GPIO_RegDef_t*)GPIO_H_BASEADDR)
-#define GPIOI 						((GPIO_RegDef_t*)GPIO_I_BASEADDR)
+#define GPIOA 						((GPIO_RegDef_t*)GPIOA_BASEADDR)
+#define GPIOB 						((GPIO_RegDef_t*)GPIOB_BASEADDR)
+#define GPIOC 						((GPIO_RegDef_t*)GPIOC_BASEADDR)
+#define GPIOD 						((GPIO_RegDef_t*)GPIOD_BASEADDR)
+#define GPIOE 						((GPIO_RegDef_t*)GPIOE_BASEADDR)
+#define GPIOF 						((GPIO_RegDef_t*)GPIOF_BASEADDR)
+#define GPIOG 						((GPIO_RegDef_t*)GPIOG_BASEADDR)
+#define GPIOH 						((GPIO_RegDef_t*)GPIOH_BASEADDR)
+#define GPIOI 						((GPIO_RegDef_t*)GPIOI_BASEADDR)
 
 #define RCC							((RCC_RegDef_t*)RCC_BASEADDR)
 
@@ -234,6 +234,18 @@ typedef struct
  * Clock Disable Macros for SYSCFG peripherals
  */
 #define SYSCFG_PCLK_DI()	( RCC->APB2ENR &= ~( 1 << 14 ) )
+
+/*
+ * Macros to reset GPIOx peripherals
+ */
+#define GPIOA_REG_RESET()	do { (RCC->AHB1RSTR |= (1 << 0)); (RCC->AHB1RSTR |= ~(1 << 0)); } while(0)
+#define GPIOB_REG_RESET()	do { (RCC->AHB1RSTR |= (1 << 1)); (RCC->AHB1RSTR |= ~(1 << 1)); } while(0)
+#define GPIOC_REG_RESET()	do { (RCC->AHB1RSTR |= (1 << 2)); (RCC->AHB1RSTR |= ~(1 << 2)); } while(0)
+#define GPIOD_REG_RESET()	do { (RCC->AHB1RSTR |= (1 << 3)); (RCC->AHB1RSTR |= ~(1 << 3)); } while(0)
+#define GPIOE_REG_RESET()	do { (RCC->AHB1RSTR |= (1 << 4)); (RCC->AHB1RSTR |= ~(1 << 4)); } while(0)
+#define GPIOF_REG_RESET()	do { (RCC->AHB1RSTR |= (1 << 5)); (RCC->AHB1RSTR |= ~(1 << 5)); } while(0)
+#define GPIOG_REG_RESET()	do { (RCC->AHB1RSTR |= (1 << 6)); (RCC->AHB1RSTR |= ~(1 << 6)); } while(0)
+#define GPIOH_REG_RESET()	do { (RCC->AHB1RSTR |= (1 << 7)); (RCC->AHB1RSTR |= ~(1 << 7)); } while(0)
 
 // some generic macors
 #define ENABLE 				1
