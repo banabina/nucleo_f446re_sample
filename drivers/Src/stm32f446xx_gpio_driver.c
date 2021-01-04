@@ -92,7 +92,7 @@ void GPIO_PeripheralClockControl(GPIO_RegDef_t* pGPIOx, uint8_t EnorDi)
  *
  * @ brief			- This function inits gpio
  *
- * @param[in]		- gpio
+ * @param[in]		- gpio handle
  *
  * @return			- none
  *
@@ -145,11 +145,11 @@ void GPIO_Init(GPIO_Handle_t* pGPIOHandle)
 	}
 }
 /*********************************************************************
- * @fn				- GPIO_Init
+ * @fn				- GPIO_DeInit
  *
- * @ brief			- This function inits gpio
+ * @ brief			- This function resets gpio
  *
- * @param[in]		- gpio
+ * @param[in]		- base address of gpio peripheral
  *
  * @return			- none
  *
@@ -188,43 +188,51 @@ void GPIO_DeInit(GPIO_RegDef_t* pGPIOx)
  * Data read and write
  */
 /*********************************************************************
- * @fn				- GPIO_Init
+ * @fn				- GPIO_ReadFromInputPin
  *
- * @ brief			- This function inits gpio
+ * @ brief			- This function read data from input pin
  *
- * @param[in]		- gpio
+ * @param[in]		- base address of gpio peripheral
+ * @param[in]		- gpio pin number
  *
- * @return			- none
+ * @return			- data from input pin
  *
    @Note			- none
  */
 uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t* pGPIOx, uint8_t PinNumber)
 {
-	return 0;
+	uint8_t value;
+	value = (uint8_t)((pGPIOx->IDR >> PinNumber) & 0x0000001 );
+
+	return value;
 }
 
 /*********************************************************************
- * @fn				- GPIO_Init
+ * @fn				- GPIO_ReadFromInputPin
  *
- * @ brief			- This function inits gpio
+ * @ brief			- This function read data from input port
  *
- * @param[in]		- gpio
+ * @param[in]		- base address of gpio peripheral
  *
- * @return			- none
+ * @return			- data from input port
  *
    @Note			- none
- */
-uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t* pGPIOx)
+ */uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t* pGPIOx)
 {
-	return 0;
+	uint16_t value;
+	value = (uint16_t)pGPIOx->IDR;
+
+	return value;
 }
 
 /*********************************************************************
- * @fn				- GPIO_Init
+ * @fn				- GPIO_WriteToOutputPin
  *
- * @ brief			- This function inits gpio
+ * @ brief			- This function writes to output pin
  *
- * @param[in]		- gpio
+ * @param[in]		- base address of gpio peripheral
+ * @param[in]		- gpio pin number
+ * @param[in]		- value to write
  *
  * @return			- none
  *
@@ -232,15 +240,24 @@ uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t* pGPIOx)
  */
 void GPIO_WriteToOutputPin(GPIO_RegDef_t* pGPIOx, uint8_t PinNumber, uint8_t Value)
 {
-
+	if (Value == GPIO_PIN_SET)
+	{
+		// write 1 to the output data register at the bit field corresponding to the pin number
+		pGPIOx->ODR |= ( 1 << PinNumber);
+	} else
+	{
+		// write 0
+		pGPIOx->ODR &= ~( 1 << PinNumber);
+	}
 }
 
 /*********************************************************************
- * @fn				- GPIO_Init
+ * @fn				- GPIO_WriteToOutputPort
  *
- * @ brief			- This function inits gpio
+ * @ brief			- This function writes to output port
  *
- * @param[in]		- gpio
+ * @param[in]		- base address of gpio peripheral
+ * @param[in]		- value to write
  *
  * @return			- none
  *
@@ -248,15 +265,16 @@ void GPIO_WriteToOutputPin(GPIO_RegDef_t* pGPIOx, uint8_t PinNumber, uint8_t Val
  */
 void GPIO_WriteToOutputPort(GPIO_RegDef_t* pGPIOx, uint16_t Value)
 {
-
+	pGPIOx->ODR = Value;
 }
 
 /*********************************************************************
- * @fn				- GPIO_Init
+ * @fn				- GPIO_ToggleOutputPin
  *
- * @ brief			- This function inits gpio
+ * @ brief			- This function toggles output pin
  *
- * @param[in]		- gpio
+ * @param[in]		- base address of gpio peripheral
+ * @param[in]		- pin number
  *
  * @return			- none
  *
@@ -264,7 +282,7 @@ void GPIO_WriteToOutputPort(GPIO_RegDef_t* pGPIOx, uint16_t Value)
  */
 void GPIO_ToggleOutputPin(GPIO_RegDef_t* pGPIOx, uint8_t PinNumber)
 {
-
+	pGPIOx->ODR ^= ( 1 << PinNumber);
 }
 
 
