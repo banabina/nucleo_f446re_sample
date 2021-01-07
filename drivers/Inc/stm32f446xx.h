@@ -11,6 +11,32 @@
 #include <stdint.h>
 
 #define __vo volatile
+
+/* **************************************START: Processor Specific Details *************************************************/
+/*
+ * ARM Cortex Mx processor NVIC ISERx register addresses
+ */
+
+#define NVIC_ISER0					( (__vo uint32_t*)0xE000E100 )
+#define NVIC_ISER1					( (__vo uint32_t*)0xE000E104 )
+#define NVIC_ISER2					( (__vo uint32_t*)0xE000E108 )
+#define NVIC_ISER3					( (__vo uint32_t*)0xE000E10c )
+
+#define NVIC_ICER0					( (__vo uint32_t*)0XE000E180 )
+#define NVIC_ICER1					( (__vo uint32_t*)0XE000E184 )
+#define NVIC_ICER2					( (__vo uint32_t*)0XE000E188 )
+#define NVIC_ICER3					( (__vo uint32_t*)0XE000E18c )
+
+/*
+ * ARM Cortex Mx Processor Priority Register Address Calculation
+ */
+#define NVIC_PR_BASE_ADDR			( (__vo uint32_t*)0xE000E400 )
+
+/*
+ * ARM Cortex Mx Processor number of Priority bits implemented in Priority Register
+ */
+#define  NO_PR_BITS_IMPLEMENTED		4
+
 /*
  * base addresses of Flash and SRAM memories
  */
@@ -85,7 +111,7 @@ typedef struct
 	__vo uint32_t BSRR;							/* GPIO port bit set/reset register 			offset : 0x18 */
 	__vo uint32_t LCKR;							/* GPIO port configuration lock register		offset : 0x1c */
 	__vo uint32_t AFR[2]; 						/* GPIO alternate function low/high register	offset : 0x20 */
-}GPIO_RegDef_t;
+} GPIO_RegDef_t;
 
 typedef struct
 {
@@ -123,7 +149,35 @@ typedef struct
 	__vo uint32_t DCK_CFGR;						/* RCC Dedicated Clock Configuration Register		offset : 0x8c */
 	__vo uint32_t CK_GATENR;					/* RCC clocks gated enable register 				offset : 0x90 */
 	__vo uint32_t DCK_CFGR2;					/* RCC dedicated clocks configuration register 2	offset : 0x94 */
-}RCC_RegDef_t;
+} RCC_RegDef_t;
+
+/*
+ * peripheral register definition structure for EXTI
+ */
+typedef struct
+{
+	__vo uint32_t IMR;							/* Interrupt mask register							offset : 0x00	*/
+	__vo uint32_t EMR;							/* Event mask register								offset : 0x04	*/
+	__vo uint32_t RTSR;							/* Rising trigger selection register				offset : 0x08	*/
+	__vo uint32_t FTSR;							/* Falling trigger selection register				offset : 0x0C	*/
+	__vo uint32_t SWIER;						/* Software interrupt event register				offset : 0x10	*/
+	__vo uint32_t PR;							/* Pending register									offset : 0x14	*/
+} EXTI_RegDef_t;
+
+/*
+ * peripheral register definition structure for SYSCFG
+ */
+typedef struct
+{
+	__vo uint32_t MEMRMP;						/* SYSCFG memory remap register							offset : 0x00	*/
+	__vo uint32_t PMC;							/* SYSCFG peripheral mode configuration register		offset : 0x04	*/
+	__vo uint32_t EXTICR[4];					/* SYSCFG external interrupt configuration register	offset : 0x08-0x14 */
+	uint32_t 	  RESERVED1[2];
+	__vo uint32_t CMPCR;						/* Compensation cell control register					offset : 0x20	*/
+	uint32_t 	  RESERVED2[2];
+	__vo uint32_t CFGR;							/* SYSCFG configuration register 						offset : 0x2C	*/
+
+} SYSCFG_RegDef_t;
 
 /*
  * peripheral definitions ( Peripheral base addresses typecasted to xxx_RegDef_t )
@@ -137,9 +191,12 @@ typedef struct
 #define GPIOF 						((GPIO_RegDef_t*)GPIOF_BASEADDR)
 #define GPIOG 						((GPIO_RegDef_t*)GPIOG_BASEADDR)
 #define GPIOH 						((GPIO_RegDef_t*)GPIOH_BASEADDR)
-#define GPIOI 						((GPIO_RegDef_t*)GPIOI_BASEADDR)
 
 #define RCC							((RCC_RegDef_t*)RCC_BASEADDR)
+
+#define EXTI						((EXTI_RegDef_t*)EXTI_BASEADDR)
+
+#define SYSCFG						((SYSCFG_RegDef_t*)SYSCFG_BASEADDR)
 
 /*
  * Clock Enable Macros for Gpiox peripherals
@@ -247,13 +304,26 @@ typedef struct
 #define GPIOG_REG_RESET()	do { (RCC->AHB1RSTR |= (1 << 6)); (RCC->AHB1RSTR |= ~(1 << 6)); } while(0)
 #define GPIOH_REG_RESET()	do { (RCC->AHB1RSTR |= (1 << 7)); (RCC->AHB1RSTR |= ~(1 << 7)); } while(0)
 
-// some generic macors
+// some generic macros
 #define ENABLE 				1
 #define DISABLE 			0
 #define SET					ENABLE
 #define RESET				DISABLE
 #define GPIO_PIN_SET		SET
 #define GPIO_PIN_RESET		RESET
+
+#define GPIO_BASEADDR_TO_CODE(x)	  ( (x == GPIOA) ? 0 : \
+										(x == GPIOB) ? 1 : \
+										(x == GPIOC) ? 2 : \
+										(x == GPIOD) ? 3 : \
+										(x == GPIOE) ? 4 : \
+										(x == GPIOF) ? 5 : \
+										(x == GPIOG) ? 6 : \
+										(x == GPIOH) ? 7 : 0 )
+
+
+#define IRQ_NO_EXTI0
+
 
 #include "stm32f446xx_gpio_driver.h"
 

@@ -62,7 +62,7 @@ typedef struct
 #define GPIO_MODE_ANALOG	3
 #define GPIO_MODE_IT_FT		4
 #define GPIO_MODE_IT_RT		5
-#define GPIO_MODE_IT_RF		6
+#define GPIO_MODE_IT_RFT	6
 
 /*
  * @GPIO_PIN_OP_TYPE
@@ -117,7 +117,8 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t* pGPIOx, uint8_t PinNumber);
 /*
  * IRQ configuration and ISR handling
  */
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi);
+void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);
+void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority);
 void GPIO_IRQHandling(uint8_t PinNumber);
 
 #endif /* INC_STM32F446XX_GPIO_DRIVER_H_ */
