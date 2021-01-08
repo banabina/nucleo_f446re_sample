@@ -322,9 +322,6 @@ typedef struct
 										(x == GPIOH) ? 7 : 0 )
 
 
-#define IRQ_NO_EXTI0
-
-
 #include "stm32f446xx_gpio_driver.h"
 
 #endif /* INC_STM32F446XX_H_ */
