@@ -322,7 +322,7 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t* pGPIOx, uint8_t PinNumber)
  * IRQ configuration and ISR handling
  */
 /*********************************************************************
- * @fn				- GPIO_Init
+ * @fn				- GPIO_IRQInterruptConfig
  *
  * @ brief			- This function inits gpio
  *
