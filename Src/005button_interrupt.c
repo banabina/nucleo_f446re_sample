@@ -1,12 +1,11 @@
 /*
- * 003led_button_ext.c
+ * 005button_interrupt.c
  *
  *  Created on: 2021. 1. 9.
  *      Author: JKwan
  */
 
-
-
+#include <string.h>
 #include "stm32f446xx.h"
 
 #define LOW					0
@@ -20,35 +19,38 @@ void delay(void)
 
 int main(void)
 {
-	GPIO_Handle_t GpioLed;
+	GPIO_Handle_t GpioLed, GpioButton;
+	memset(&GpioLed, 0, sizeof(GpioLed));
+	memset(&GpioButton, 0, sizeof(GpioButton));
 
 	GpioLed.pGPIOx = GPIOA;
-	GpioLed.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_8;
+	GpioLed.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_5;
 	GpioLed.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT;
 	GpioLed.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
 	GpioLed.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
 	GpioLed.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
 
-	GPIO_Handle_t GpioButton;
-
-	GpioButton.pGPIOx = GPIOB;
-	GpioButton.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_12;
-	GpioButton.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_IN;
+	GpioButton.pGPIOx = GPIOC;
+	GpioButton.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_13;
+	GpioButton.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_IT_FT;
 	GpioButton.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
 	GpioButton.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PIN_PU;
 
 	GPIO_PeripheralClockControl(GPIOA, ENABLE);
-	GPIO_PeripheralClockControl(GPIOB, ENABLE);
+	GPIO_PeripheralClockControl(GPIOC, ENABLE);
 	GPIO_Init(&GpioLed);
 	GPIO_Init(&GpioButton);
 
-	while(1)
-	{
-		if (GPIO_ReadFromInputPin(GPIOB, GPIO_PIN_NO_12) == BTN_PRESSED)
-		{
-			GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_8);
-			delay();
-		}
-	}
+	//IRQ configuration
+	GPIO_IRQPriorityConfig(IRQ_NO_EXTI15_10, NVIC_IRQ_PRI15);
+	GPIO_IRQInterruptConfig(IRQ_NO_EXTI15_10, ENABLE);
+
 	return 0;
 }
+
+void EXTI15_10_IRQHandler(void)
+{
+	GPIO_IRQHandling(GPIO_PIN_NO_13);
+	GPIO_ToggleOutputPin(GPIOA, GPIO_PIN_NO_5);
+}
+
